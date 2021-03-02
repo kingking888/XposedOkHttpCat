@@ -1,4 +1,4 @@
-package com.zx.Justmeplush;
+package zhenxi.xposedinto;
 
 import android.Manifest;
 import android.content.Intent;
@@ -13,12 +13,13 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import android.widget.Toolbar;
 
-import com.zx.Justmeplush.Bean.AppBean;
-import com.zx.Justmeplush.adapter.MainListViewAdapter;
-import com.zx.Justmeplush.utils.PermissionUtils;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import zhenxi.xposedinto.Bean.AppBean;
+import zhenxi.xposedinto.View.Xiaomiquan;
+import zhenxi.xposedinto.adapter.MainListViewAdapter;
+import zhenxi.xposedinto.utils.PermissionUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -27,10 +28,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<AppBean> CommonPackageList = new ArrayList<>();
     private Toolbar mToolbar;
 
-//    String[] permissionList = {
-//            Manifest.permission.READ_EXTERNAL_STORAGE,
-//            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//    };
+    String[] permissionList = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+    };
 
 
     private CheckBox mCb_checkbox;
@@ -43,12 +44,23 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         initData();
         initView();
-        //PermissionUtils.initPermission(this, permissionList);
+
+        PermissionUtils.initPermission(this, permissionList);
 
         //test();
     }
 
+    private void test() {
+        try {
+            WifiManager systemService = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
+            assert systemService != null;
+            String ssid = systemService.getConnectionInfo().getSSID();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
+
+    }
 
     private void initData() {
         mAllPackageList = getPackageList();
@@ -76,10 +88,13 @@ public class MainActivity extends AppCompatActivity {
         mToolbar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.AddQQGroup:
-                    joinQQGroup("2AcJQ5PnHkpqLkSAbAoIBRLJcyDJcq8F");
+                    joinQQGroup();
                     break;
                 case R.id.xiaomiquan:
                     xiaomiquan();
+                    break;
+                case R.id.shiyongshuoming:
+
                     break;
             }
             return false;
@@ -92,20 +107,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void xiaomiquan() {
-       startActivity(new Intent(this,Xiaomiquan.class));
+        startActivity(new Intent(this, Xiaomiquan.class));
     }
-
     /****************
      *
-     * 发起添加群流程。群号：故事(773642813) 的 key 为： 2AcJQ5PnHkpqLkSAbAoIBRLJcyDJcq8F
-     * 调用 joinQQGroup(2AcJQ5PnHkpqLkSAbAoIBRLJcyDJcq8F) 即可发起手Q客户端申请加群 故事(773642813)
+     * 发起添加群流程。群号：OkHttpCat交流群(828912339) 的 key 为： how_NwAQvL0wiN_DkC5kGPFSJ3BuUKSG
+     * 调用 joinQQGroup(how_NwAQvL0wiN_DkC5kGPFSJ3BuUKSG) 即可发起手Q客户端申请加群 OkHttpCat交流群(828912339)
      *
-     * @param key 由官网生成的key
      * @return 返回true表示呼起手Q成功，返回fals表示呼起失败
      ******************/
-    public boolean joinQQGroup(String key) {
+    public boolean joinQQGroup() {
         Intent intent = new Intent();
-        intent.setData(Uri.parse("mqqopensdkapi://bizAgent/qm/qr?url=http%3A%2F%2Fqm.qq.com%2Fcgi-bin%2Fqm%2Fqr%3Ffrom%3Dapp%26p%3Dandroid%26k%3D" + key));
+        intent.setData(Uri.parse(this.getString(R.string.joinQQ)));
         // 此Flag可根据具体产品需要自定义，如设置，则在加群界面按返回，返回手Q主界面，不设置，按返回会返回到呼起产品界面    //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         try {
             startActivity(intent);
@@ -115,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
     }
+
 
     public ArrayList<AppBean> getPackageList() {
         PackageManager packageManager = getPackageManager();
@@ -144,5 +158,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return appBeans;
     }
+
 
 }

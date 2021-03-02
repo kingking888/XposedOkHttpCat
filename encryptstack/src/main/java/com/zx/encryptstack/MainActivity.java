@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
 //            WifiManager systemService = (WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE);
 //            assert systemService != null;
 //            String ssid = systemService.getConnectionInfo().getSSID();
-//        } catch (Exception e) {
+//        } catch (Throwable e) {
 //            e.printStackTrace();
 //        }
 
